@@ -26,6 +26,8 @@ with a complete **HTML/CSS/JavaScript** frontend.
 
 ## 🚀 How to Run
 
+DIRECT LINK : https://smart-banking-system-six.vercel.app/
+
 ### Run C++ version (Terminal):
 ```bash
 g++ banking_system_final_cpp.cpp -o bank
