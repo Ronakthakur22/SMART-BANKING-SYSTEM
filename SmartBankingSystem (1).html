@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Smart Banking System</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f0f0f0;
+      margin: 0;
+      padding: 20px;
+    }
+
+    h1 {
+      text-align: center;
+      background-color: #4a90d9;
+      color: white;
+      padding: 15px;
+      border-radius: 5px;
+    }
+
+    h2 {
+      background-color: #d0e4f7;
+      padding: 10px;
+      border-radius: 4px;
+    }
+
+    .page {
+      display: none;
+      background: white;
+      padding: 20px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      max-width: 450px;
+      margin: 20px auto;
+    }
+
+    .page.active {
+      display: block;
+    }
+
+    label {
+      display: block;
+      margin-top: 10px;
+      font-weight: bold;
+    }
+
+    input[type="text"],
+    input[type="number"],
+    input[type="password"] {
+      width: 95%;
+      padding: 8px;
+      margin-top: 4px;
+      border: 1px solid #aaa;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+
+    button {
+      margin-top: 10px;
+      padding: 9px 16px;
+      font-size: 14px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      background-color: #4a90d9;
+      color: white;
+      width: 100%;
+    }
+
+    button:hover {
+      background-color: #357ab8;
+    }
+
+    .btn-red {
+      background-color: #e05555;
+    }
+    .btn-red:hover {
+      background-color: #c03030;
+    }
+
+    .btn-green {
+      background-color: #4caf50;
+    }
+    .btn-green:hover {
+      background-color: #388e3c;
+    }
+
+    .btn-gray {
+      background-color: #888;
+    }
+    .btn-gray:hover {
+      background-color: #666;
+    }
+
+    .msg {
+      margin-top: 12px;
+      padding: 10px;
+      border-radius: 4px;
+      font-size: 14px;
+      display: none;
+    }
+
+    .msg.show { display: block; }
+    .msg.ok   { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+    .msg.err  { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+    .msg.info { background: #d1ecf1; color: #0c5460; border: 1px solid #bee5eb; }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+      font-size: 13px;
+    }
+
+    table th {
+      background: #4a90d9;
+      color: white;
+      padding: 7px;
+      text-align: left;
+    }
+
+    table td {
+      padding: 7px;
+      border-bottom: 1px solid #ddd;
+    }
+
+    table tr:hover td { background: #f5f5f5; }
+
+    .menu-btn-list button {
+      margin-top: 8px;
+    }
+
+    .balance-box {
+      background: #e8f4fc;
+      border: 1px solid #4a90d9;
+      border-radius: 5px;
+      padding: 10px;
+      text-align: center;
+      font-size: 18px;
+      font-weight: bold;
+      margin-bottom: 12px;
+      color: #2c6fad;
+    }
+
+    hr {
+      border: none;
+      border-top: 1px solid #ddd;
+      margin: 12px 0;
+    }
+
+    .small-note {
+      font-size: 12px;
+      color: #777;
+      margin-top: 6px;
+    }
+  </style>
+</head>
+<body>
+
+<h1>🏦 Smart Banking System</h1>
+
+<!-- ========== MAIN MENU ========== -->
+<div id="pg-main" class="page active">
+  <h2>Main Menu</h2>
+  <div class="menu-btn-list">
+    <button onclick="go('pg-create')">1. Create New Account</button>
+    <button onclick="go('pg-login')">2. Login to Account</button>
+    <button onclick="go('pg-admin-login')">3. Admin Panel</button>
+    <button class="btn-red" onclick="alert('Goodbye!')">0. Exit</button>
+  </div>
+</div>
+
+<!-- ========== CREATE ACCOUNT ========== -->
+<div id="pg-create" class="page">
+  <h2>Create New Account</h2>
+
+  <label>Full Name:</label>
+  <input type="text" id="c-name" placeholder="Enter your name" />
+
+  <label>Age:</label>
+  <input type="number" id="c-age" placeholder="Enter your age" />
+
+  <label>Address:</label>
+  <input type="text" id="c-address" placeholder="Enter your address" />
+
+  <label>Set PIN (4 digits):</label>
+  <input type="password" id="c-pin" maxlength="4" placeholder="e.g. 1234" />
+
+  <label>Initial Deposit (Rs.):</label>
+  <input type="number" id="c-deposit" placeholder="e.g. 1000" />
+
+  <div id="msg-create" class="msg"></div>
+
+  <button class="btn-green" onclick="createAccount()">✔ Create Account</button>
+  <button class="btn-gray" onclick="go('pg-main')">← Back</button>
+</div>
+
+<!-- ========== LOGIN ========== -->
+<div id="pg-login" class="page">
+  <h2>Login</h2>
+
+  <label>Account Number:</label>
+  <input type="number" id="l-accno" placeholder="e.g. 100001" />
+
+  <label>PIN:</label>
+  <input type="password" id="l-pin" maxlength="4" placeholder="Enter PIN" />
+
+  <div id="msg-login" class="msg"></div>
+
+  <button onclick="doLogin()">🔑 Login</button>
+  <button class="btn-gray" onclick="go('pg-main')">← Back</button>
+</div>
+
+<!-- ========== ACCOUNT MENU ========== -->
+<div id="pg-account" class="page">
+  <h2>Account Menu</h2>
+  <p>Welcome, <strong id="acc-name-display">User</strong></p>
+  <div class="balance-box">Balance: Rs. <span id="acc-bal-display">0.00</span></div>
+
+  <div class="menu-btn-list">
+    <button class="btn-green" onclick="go('pg-deposit')">1. Deposit</button>
+    <button class="btn-red"   onclick="go('pg-withdraw')">2. Withdraw</button>
+    <button onclick="go('pg-transfer')">3. Transfer</button>
+    <button onclick="go('pg-details')">4. Account Details</button>
+    <button onclick="go('pg-fd')">5. FD Calculator</button>
+    <button onclick="go('pg-loan')">6. Loan Eligibility Check</button>
+    <hr>
+    <button class="btn-gray" onclick="doLogout()">0. Logout</button>
+  </div>
+</div>
+
+<!-- ========== DEPOSIT ========== -->
+<div id="pg-deposit" class="page">
+  <h2>Deposit Money</h2>
+  <div class="balance-box">Balance: Rs. <span id="dep-bal">0.00</span></div>
+
+  <label>Amount to Deposit (Rs.):</label>
+  <input type="number" id="dep-amount" placeholder="e.g. 500" />
+
+  <div id="msg-deposit" class="msg"></div>
+
+  <button class="btn-green" onclick="doDeposit()">✔ Deposit</button>
+  <button class="btn-gray"  onclick="go('pg-account')">← Back</button>
+</div>
+
+<!-- ========== WITHDRAW ========== -->
+<div id="pg-withdraw" class="page">
+  <h2>Withdraw Money</h2>
+  <div class="balance-box">Balance: Rs. <span id="wit-bal">0.00</span></div>
+
+  <label>Amount to Withdraw (Rs.):</label>
+  <input type="number" id="wit-amount" placeholder="e.g. 200" />
+
+  <div id="msg-withdraw" class="msg"></div>
+
+  <button class="btn-red" onclick="doWithdraw()">✔ Withdraw</button>
+  <button class="btn-gray" onclick="go('pg-account')">← Back</button>
+</div>
+
+<!-- ========== TRANSFER ========== -->
+<div id="pg-transfer" class="page">
+  <h2>Transfer Money</h2>
+  <div class="balance-box">Balance: Rs. <span id="tra-bal">0.00</span></div>
+
+  <label>Receiver Account Number:</label>
+  <input type="number" id="tra-accno" placeholder="e.g. 100002" />
+
+  <label>Amount to Transfer (Rs.):</label>
+  <input type="number" id="tra-amount" placeholder="e.g. 300" />
+
+  <div id="msg-transfer" class="msg"></div>
+
+  <button onclick="doTransfer()">✔ Transfer</button>
+  <button class="btn-gray" onclick="go('pg-account')">← Back</button>
+</div>
+
+<!-- ========== ACCOUNT DETAILS ========== -->
+<div id="pg-details" class="page">
+  <h2>Account Details</h2>
+  <table>
+    <tr><th>Field</th><th>Info</th></tr>
+    <tr><td>Account No.</td><td id="det-no">—</td></tr>
+    <tr><td>Name</td><td id="det-name">—</td></tr>
+    <tr><td>Age</td><td id="det-age">—</td></tr>
+    <tr><td>Address</td><td id="det-address">—</td></tr>
+    <tr><td>Balance</td><td id="det-bal">—</td></tr>
+  </table>
+  <button class="btn-gray" style="margin-top:14px" onclick="go('pg-account')">← Back</button>
+</div>
+
+<!-- ========== FD CALCULATOR ========== -->
+<div id="pg-fd" class="page">
+  <h2>FD Calculator</h2>
+  <p class="small-note">Calculates compound interest yearly (same as your C++ code).</p>
+
+  <label>FD Amount (Rs.):</label>
+  <input type="number" id="fd-amt" placeholder="e.g. 10000" />
+
+  <label>Interest Rate (%):</label>
+  <input type="number" id="fd-rate" placeholder="e.g. 7" />
+
+  <label>Duration (Years):</label>
+  <input type="number" id="fd-years" placeholder="e.g. 3" />
+
+  <div id="msg-fd" class="msg"></div>
+
+  <button onclick="calcFD()">📈 Calculate</button>
+  <button class="btn-gray" onclick="go('pg-account')">← Back</button>
+</div>
+
+<!-- ========== LOAN CHECK ========== -->
+<div id="pg-loan" class="page">
+  <h2>Loan Eligibility Check</h2>
+  <p class="small-note">Need: Monthly Income ≥ Rs.30,000 AND Credit Score ≥ 700</p>
+
+  <label>Monthly Income (Rs.):</label>
+  <input type="number" id="loan-income" placeholder="e.g. 35000" />
+
+  <label>Credit Score:</label>
+  <input type="number" id="loan-score" placeholder="e.g. 720" />
+
+  <div id="msg-loan" class="msg"></div>
+
+  <button onclick="checkLoan()">🏠 Check Eligibility</button>
+  <button class="btn-gray" onclick="go('pg-account')">← Back</button>
+</div>
+
+<!-- ========== ADMIN LOGIN ========== -->
+<div id="pg-admin-login" class="page">
+  <h2>Admin Login</h2>
+
+  <label>Username:</label>
+  <input type="text" id="adm-user" placeholder="admin" />
+
+  <label>Password:</label>
+  <input type="password" id="adm-pass" placeholder="Password" />
+
+  <div id="msg-adm-login" class="msg"></div>
+
+  <button onclick="adminLogin()">🔐 Login as Admin</button>
+  <button class="btn-gray" onclick="go('pg-main')">← Back</button>
+</div>
+
+<!-- ========== ADMIN PANEL ========== -->
+<div id="pg-admin" class="page">
+  <h2>Admin Panel</h2>
+
+  <table>
+    <tr><th>Info</th><th>Value</th></tr>
+    <tr><td>Total Accounts</td><td id="adm-total">0</td></tr>
+    <tr><td>Total Bank Balance</td><td id="adm-balance">Rs. 0</td></tr>
+    <tr><td>Locked Accounts</td><td id="adm-locked">0</td></tr>
+    <tr><td>Richest Customer</td><td id="adm-richest">—</td></tr>
+  </table>
+
+  <h3 style="margin-top:16px">All Accounts</h3>
+  <table>
+    <thead>
+      <tr><th>Acc No</th><th>Name</th><th>Balance</th><th>Status</th><th>Action</th></tr>
+    </thead>
+    <tbody id="adm-table"></tbody>
+  </table>
+
+  <div id="msg-admin" class="msg"></div>
+  <button class="btn-gray" style="margin-top:14px" onclick="doLogout()">← Logout</button>
+</div>
+
+<!-- ========== JAVASCRIPT ========== -->
+<script>
+
+  // ---------- DATA ----------
+  var accounts  = [];
+  var nextAccNo = 100001;
+  var loggedIn  = -1;   // index of logged-in user
+
+  loadData();
+
+  function saveData() {
+    localStorage.setItem('bank', JSON.stringify({ accounts: accounts, nextAccNo: nextAccNo }));
+  }
+
+  function loadData() {
+    var raw = localStorage.getItem('bank');
+    if (raw) {
+      var d = JSON.parse(raw);
+      accounts  = d.accounts;
+      nextAccNo = d.nextAccNo;
+    }
+  }
+
+  function findAcc(num) {
+    for (var i = 0; i < accounts.length; i++)
+      if (accounts[i].accountNumber === num) return i;
+    return -1;
+  }
+
+  // ---------- NAVIGATION ----------
+  function go(pageId) {
+    var pages = document.querySelectorAll('.page');
+    for (var i = 0; i < pages.length; i++) pages[i].classList.remove('active');
+    document.getElementById(pageId).classList.add('active');
+    clearMsgs();
+
+    if (pageId === 'pg-account' && loggedIn !== -1) refreshBalDisplay();
+    if (pageId === 'pg-deposit'  && loggedIn !== -1) document.getElementById('dep-bal').textContent = accounts[loggedIn].balance.toFixed(2);
+    if (pageId === 'pg-withdraw' && loggedIn !== -1) document.getElementById('wit-bal').textContent = accounts[loggedIn].balance.toFixed(2);
+    if (pageId === 'pg-transfer' && loggedIn !== -1) document.getElementById('tra-bal').textContent = accounts[loggedIn].balance.toFixed(2);
+    if (pageId === 'pg-details'  && loggedIn !== -1) fillDetails();
+    if (pageId === 'pg-admin')    fillAdmin();
+  }
+
+  function clearMsgs() {
+    var msgs = document.querySelectorAll('.msg');
+    for (var i = 0; i < msgs.length; i++) { msgs[i].className = 'msg'; msgs[i].textContent = ''; }
+  }
+
+  function showMsg(id, text, type) {
+    var el = document.getElementById(id);
+    el.className = 'msg show ' + type;
+    el.textContent = text;
+  }
+
+  function refreshBalDisplay() {
+    var b = accounts[loggedIn].balance.toFixed(2);
+    document.getElementById('acc-bal-display').textContent = b;
+  }
+
+  // ---------- CREATE ACCOUNT ----------
+  function createAccount() {
+    var name    = document.getElementById('c-name').value.trim();
+    var age     = parseInt(document.getElementById('c-age').value);
+    var address = document.getElementById('c-address').value.trim();
+    var pin     = parseInt(document.getElementById('c-pin').value);
+    var deposit = parseFloat(document.getElementById('c-deposit').value);
+
+    if (!name)             { showMsg('msg-create','Please enter your name.','err'); return; }
+    if (!age || age < 1)   { showMsg('msg-create','Please enter a valid age.','err'); return; }
+    if (!address)          { showMsg('msg-create','Please enter your address.','err'); return; }
+    if (pin < 1000 || pin > 9999) { showMsg('msg-create','PIN must be exactly 4 digits.','err'); return; }
+    if (isNaN(deposit) || deposit < 0) { showMsg('msg-create','Enter a valid deposit amount.','err'); return; }
+
+    var acc = {
+      accountNumber: nextAccNo++,
+      name: name,
+      age: age,
+      address: address,
+      pin: pin,
+      balance: deposit,
+      locked: false,
+      wrongTries: 0
+    };
+    accounts.push(acc);
+    saveData();
+
+    showMsg('msg-create', 'Account created! Your Account Number is: ' + acc.accountNumber, 'ok');
+    document.getElementById('c-name').value    = '';
+    document.getElementById('c-age').value     = '';
+    document.getElementById('c-address').value = '';
+    document.getElementById('c-pin').value     = '';
+    document.getElementById('c-deposit').value = '';
+  }
+
+  // ---------- LOGIN ----------
+  function doLogin() {
+    var num = parseInt(document.getElementById('l-accno').value);
+    var pin = parseInt(document.getElementById('l-pin').value);
+    var i   = findAcc(num);
+
+    if (i === -1)               { showMsg('msg-login','Account not found.','err'); return; }
+    if (accounts[i].locked)     { showMsg('msg-login','Account is locked. Contact admin.','err'); return; }
+
+    if (accounts[i].pin === pin) {
+      accounts[i].wrongTries = 0;
+      loggedIn = i;
+      saveData();
+      document.getElementById('acc-name-display').textContent = accounts[i].name;
+      go('pg-account');
+    } else {
+      accounts[i].wrongTries++;
+      if (accounts[i].wrongTries >= 3) {
+        accounts[i].locked = true;
+        saveData();
+        showMsg('msg-login', 'Too many wrong PINs. Account is now locked!', 'err');
+      } else {
+        saveData();
+        showMsg('msg-login', 'Wrong PIN. Tries left: ' + (3 - accounts[i].wrongTries), 'err');
+      }
+    }
+  }
+
+  // ---------- LOGOUT ----------
+  function doLogout() {
+    loggedIn = -1;
+    go('pg-main');
+  }
+
+  // ---------- DEPOSIT ----------
+  function doDeposit() {
+    var amt = parseFloat(document.getElementById('dep-amount').value);
+    if (isNaN(amt) || amt <= 0) { showMsg('msg-deposit','Enter a valid amount.','err'); return; }
+
+    accounts[loggedIn].balance += amt;
+    saveData();
+    document.getElementById('dep-amount').value = '';
+    document.getElementById('dep-bal').textContent = accounts[loggedIn].balance.toFixed(2);
+    showMsg('msg-deposit', 'Deposited Rs.' + amt.toFixed(2) + '  |  New Balance: Rs.' + accounts[loggedIn].balance.toFixed(2), 'ok');
+    refreshBalDisplay();
+  }
+
+  // ---------- WITHDRAW ----------
+  function doWithdraw() {
+    var amt = parseFloat(document.getElementById('wit-amount').value);
+    if (isNaN(amt) || amt <= 0)              { showMsg('msg-withdraw','Enter a valid amount.','err'); return; }
+    if (amt > accounts[loggedIn].balance)    { showMsg('msg-withdraw','Not enough balance.','err'); return; }
+
+    accounts[loggedIn].balance -= amt;
+    saveData();
+    document.getElementById('wit-amount').value = '';
+    document.getElementById('wit-bal').textContent = accounts[loggedIn].balance.toFixed(2);
+    showMsg('msg-withdraw', 'Withdrawn Rs.' + amt.toFixed(2) + '  |  New Balance: Rs.' + accounts[loggedIn].balance.toFixed(2), 'ok');
+    refreshBalDisplay();
+  }
+
+  // ---------- TRANSFER ----------
+  function doTransfer() {
+    var toNum = parseInt(document.getElementById('tra-accno').value);
+    var amt   = parseFloat(document.getElementById('tra-amount').value);
+    var j     = findAcc(toNum);
+
+    if (isNaN(toNum))                        { showMsg('msg-transfer','Enter receiver account number.','err'); return; }
+    if (j === -1)                            { showMsg('msg-transfer','Receiver account not found.','err'); return; }
+    if (j === loggedIn)                      { showMsg('msg-transfer','Cannot transfer to your own account.','err'); return; }
+    if (isNaN(amt) || amt <= 0)              { showMsg('msg-transfer','Enter a valid amount.','err'); return; }
+    if (amt > accounts[loggedIn].balance)    { showMsg('msg-transfer','Not enough balance.','err'); return; }
+
+    accounts[loggedIn].balance -= amt;
+    accounts[j].balance        += amt;
+    saveData();
+    document.getElementById('tra-accno').value  = '';
+    document.getElementById('tra-amount').value = '';
+    document.getElementById('tra-bal').textContent = accounts[loggedIn].balance.toFixed(2);
+    showMsg('msg-transfer', 'Transferred Rs.' + amt.toFixed(2) + ' to ' + accounts[j].name + '.  Your Balance: Rs.' + accounts[loggedIn].balance.toFixed(2), 'ok');
+    refreshBalDisplay();
+  }
+
+  // ---------- DETAILS ----------
+  function fillDetails() {
+    var a = accounts[loggedIn];
+    document.getElementById('det-no').textContent      = a.accountNumber;
+    document.getElementById('det-name').textContent    = a.name;
+    document.getElementById('det-age').textContent     = a.age;
+    document.getElementById('det-address').textContent = a.address;
+    document.getElementById('det-bal').textContent     = 'Rs. ' + a.balance.toFixed(2);
+  }
+
+  // ---------- FD CALCULATOR ----------
+  function calcFD() {
+    var amount = parseFloat(document.getElementById('fd-amt').value);
+    var rate   = parseFloat(document.getElementById('fd-rate').value);
+    var years  = parseInt(document.getElementById('fd-years').value);
+
+    if (isNaN(amount)||isNaN(rate)||isNaN(years)||amount<=0||rate<=0||years<=0) {
+      showMsg('msg-fd','Please fill all fields with valid values.','err'); return;
+    }
+
+    var total = amount;
+    for (var y = 0; y < years; y++) total += total * rate / 100;
+
+    var interest = total - amount;
+    showMsg('msg-fd',
+      'Maturity Amount: Rs.' + total.toFixed(2) +
+      '   |   Interest Earned: Rs.' + interest.toFixed(2),
+      'ok');
+  }
+
+  // ---------- LOAN CHECK ----------
+  function checkLoan() {
+    var income = parseFloat(document.getElementById('loan-income').value);
+    var score  = parseInt(document.getElementById('loan-score').value);
+
+    if (isNaN(income) || isNaN(score)) { showMsg('msg-loan','Please enter both values.','err'); return; }
+
+    if (income >= 30000 && score >= 700) {
+      showMsg('msg-loan', 'Congratulations! You are eligible for a loan.', 'ok');
+    } else {
+      var msg = 'Loan Rejected.';
+      if (income < 30000) msg += '  Income must be >= Rs.30,000.';
+      if (score  < 700)   msg += '  Credit score must be >= 700.';
+      showMsg('msg-loan', msg, 'err');
+    }
+  }
+
+  // ---------- ADMIN LOGIN ----------
+  function adminLogin() {
+    var user = document.getElementById('adm-user').value.trim();
+    var pass = document.getElementById('adm-pass').value;
+    if (user === 'admin' && pass === 'admin123') {
+      go('pg-admin');
+    } else {
+      showMsg('msg-adm-login', 'Wrong username or password.', 'err');
+    }
+  }
+
+  // ---------- ADMIN PANEL ----------
+  function fillAdmin() {
+    var total   = 0;
+    var locked  = 0;
+    var richIdx = -1;
+
+    for (var i = 0; i < accounts.length; i++) {
+      total += accounts[i].balance;
+      if (accounts[i].locked) locked++;
+      if (richIdx === -1 || accounts[i].balance > accounts[richIdx].balance) richIdx = i;
+    }
+
+    document.getElementById('adm-total').textContent   = accounts.length;
+    document.getElementById('adm-balance').textContent = 'Rs. ' + total.toFixed(2);
+    document.getElementById('adm-locked').textContent  = locked;
+    document.getElementById('adm-richest').textContent = richIdx >= 0
+      ? accounts[richIdx].name + ' (Rs.' + accounts[richIdx].balance.toFixed(2) + ')'
+      : '—';
+
+    var tbody = document.getElementById('adm-table');
+    tbody.innerHTML = '';
+
+    if (accounts.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;color:#888">No accounts yet.</td></tr>';
+      return;
+    }
+
+    for (var i = 0; i < accounts.length; i++) {
+      var a   = accounts[i];
+      var tr  = document.createElement('tr');
+      var del = '<button class="btn-red" style="padding:4px 8px;width:auto;margin:0" onclick="adminDelete(' + i + ')">Delete</button>';
+      var ulk = a.locked
+        ? '<button style="padding:4px 8px;width:auto;margin:0;margin-left:4px" onclick="adminUnlock(' + i + ')">Unlock</button>'
+        : '';
+      tr.innerHTML =
+        '<td>' + a.accountNumber + '</td>' +
+        '<td>' + a.name + '</td>' +
+        '<td>Rs.' + a.balance.toFixed(2) + '</td>' +
+        '<td>' + (a.locked ? '<span style="color:red">Locked</span>' : '<span style="color:green">Active</span>') + '</td>' +
+        '<td>' + del + ulk + '</td>';
+      tbody.appendChild(tr);
+    }
+  }
+
+  function adminDelete(idx) {
+    if (!confirm('Delete account of ' + accounts[idx].name + '?')) return;
+    accounts.splice(idx, 1);
+    saveData();
+    fillAdmin();
+    showMsg('msg-admin', 'Account deleted.', 'info');
+  }
+
+  function adminUnlock(idx) {
+    accounts[idx].locked     = false;
+    accounts[idx].wrongTries = 0;
+    saveData();
+    fillAdmin();
+    showMsg('msg-admin', 'Account unlocked.', 'ok');
+  }
+
+</script>
+</body>
+</html>
