@@ -33,7 +33,7 @@ g++ banking_system_final_cpp.cpp -o bank
 ```
 
 ### Run HTML version (Browser):
-Just open `SmartBankingSystem.html` in any browser. No setup needed!
+Just open `index.html` in any browser. No setup needed!
 
 
 ## 👤 Admin Login
